@@ -1,19 +1,20 @@
 import 'dotenv/config';
-import {uuid} from 'uuidv4';
+import {v4} from 'uuid';
 import status from '../../status/status.js';
+import { CustomerOrderDetailsType } from '../../sharedTypes/sharedTypes.js';
 
 const url = process.env.DATABASE_LAYER_ENDPOINT;
 
 function contructOrderId(){
-    return uuid();
+    return v4();
 }
 
 export default async function customerCreatesOrder(parent, args, contextValue, info){
     const { customerOrder } = args;
     const {  customerId, order, totalCost, location, restaurantDetails } = customerOrder;
-   
+    
     const endpoint = 'postCustomerOrder';
-    const CustomerOrderDetails = {
+    const CustomerOrderDetails:CustomerOrderDetailsType = {
         orderNumber: contructOrderId(),
         customerOrderNumber: customerId,
         order: order,
@@ -27,13 +28,15 @@ export default async function customerCreatesOrder(parent, args, contextValue, i
         status:status.waitingRestaurantDriver
     }
     contextValue.pubsub.publish('DRIVER_NEW_ORDER',{
-        CustomerOrderDetails: CustomerOrderDetails
+        driverObserveOrders: CustomerOrderDetails
     });
-    
+        
     contextValue.pubsub.publish(`RESTAURANT_NEW_ORDER_${restaurantDetails.restaurantId}`,{
-        CustomerOrderDetails: CustomerOrderDetails
+        restaurantObserveOrders: CustomerOrderDetails
     });
-
-    await contextValue.post(url, endpoint, CustomerOrderDetails );
-    return CustomerOrderDetails.orderNumber;
+            
+    await contextValue.post(url, endpoint, CustomerOrderDetails);
+    return {
+        orderId:CustomerOrderDetails.orderNumber
+    };
 }

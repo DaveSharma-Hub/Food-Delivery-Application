@@ -1,8 +1,8 @@
 import axios from "axios";
 import { QueryStringParamterType } from './types/types.js';
 
-export function constructUrl(urlEndpoint:string, endpoint:string,queryParamters?:QueryStringParamterType[]){
-    const url = new URL(`${urlEndpoint}/${endpoint}`);
+export function constructUrl(urlEndpoint:string, endpoint:string,queryParamters?:QueryStringParamterType[]):string{
+    const url:URL = new URL(`${urlEndpoint}/${endpoint}`);
     queryParamters?.forEach(({parameter, value})=>{
         url.searchParams.set(parameter,value);
     });

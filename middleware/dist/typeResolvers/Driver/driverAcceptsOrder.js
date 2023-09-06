@@ -6,8 +6,11 @@ export default async function driverAcceptsOrder(parent, args, contextValue, inf
     const endpoint = 'postDriverAcceptsOrder';
     const { data } = await contextValue.post(url, endpoint, { orderId: orderId, driverId: driverId, driverLocation: driverLocation });
     contextValue.pubsub.publish(`${orderId}_CUSTOMER`, {
-        CustomerOrderDetails: {
+        customerOrder: {
             ...data
         }
     });
+    return {
+        orderId: data.orderNumber
+    };
 }

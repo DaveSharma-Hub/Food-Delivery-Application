@@ -18,7 +18,7 @@ import 'dotenv/config';
 
 const PORT = Number.parseInt(process.env.PORT) || 4000;
 
-const pubsub = new PubSub();
+export const pubsub = new PubSub();
 
 const schema = makeExecutableSchema({ typeDefs, resolvers });
 const app = express();
@@ -27,10 +27,18 @@ const httpServer = createServer(app);
 
 const wsServer = new WebSocketServer({
     server: httpServer,
-    path: '/subscriptions',
+    path: '/graphql',
   });
 
-const serverCleanup = useServer({ schema }, wsServer);
+const serverCleanup = useServer({ 
+  schema, 
+  context:(ctx, msg, args) =>{
+    ctx['pubsub'] = pubsub;
+    return {
+      ctx,msg, args
+    }
+  }
+}, wsServer);
 
 const server = new ApolloServer({
     schema,

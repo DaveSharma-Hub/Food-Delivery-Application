@@ -4,6 +4,7 @@ import subscribeCustomerOrder from './Customer/subscribeCustomerOrder.js';
 import driverAcceptsOrder from './Driver/driverAcceptsOrder.js';
 import driverCompletesOrder from './Driver/driverCompletesOrder.js';
 import driverPicksUpOrder from './Driver/driverPicksUpOrder.js';
+import subscribeDriverObserverOrders from './Driver/subscribeDriverObserveOrders.js';
 import subscribeDriverOrder from './Driver/subscribeDriverOrder.js';
 import getRestaurantsNearMe from './Restaurants/getRestaurants.js';
 import restaurantAcceptsOrder from './Restaurants/restaurantAcceptsOrder.js';
@@ -36,7 +37,7 @@ const resolvers = {
             subscribe: subscribeRestaurantObserveOrders
         },
         driverObserveOrders: {
-            subscribe: subscribeRestaurantObserveOrders
+            subscribe: subscribeDriverObserverOrders
         }
     }
 };

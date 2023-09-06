@@ -7,12 +7,12 @@ export default async function restaurantCompletesOrder(parent, args, contextValu
         const endpoint = 'postRestaurantCompletesOrder';
         const { data } = await contextValue.post(url, endpoint, { orderId: orderId, status: status.restaurantCompleteOrder });
         contextValue.pubsub.publish(`${orderId}_CUSTOMER`, {
-            CustomerOrderDetails: {
+            customerOrder: {
                 ...data
             }
         });
         contextValue.pubsub.publish(`${orderId}_DRIVER`, {
-            CustomerOrderDetails: {
+            driverOrder: {
                 ...data
             }
         });

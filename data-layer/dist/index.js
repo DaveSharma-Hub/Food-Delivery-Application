@@ -13,18 +13,25 @@ app.post('/postCustomerOrder', (req, res) => {
     try {
         const data = req.body;
         customerOrders.push(data);
+        res.send(JSON.stringify(data));
     }
     catch (e) {
         console.log(e);
+        res.sendStatus(e.status);
     }
 });
 app.post('/postRestaurantAcceptsOrder', (req, res) => {
     try {
         const { orderId, timeToCompleteOrder } = req.body;
         const index = customerOrders.findIndex(({ orderNumber }) => orderNumber === orderId);
-        customerOrders[index].restaurantDetails.timeToCompleteOrder = timeToCompleteOrder;
-        customerOrders[index].status = customerOrders[index].status === status.waitingRestaurant ? status.restaurantPreparingInProgess : status.waitingDriver;
-        res.send(JSON.stringify(customerOrders[index]));
+        if (index) {
+            customerOrders[index].restaurantDetails.timeToCompleteOrder = timeToCompleteOrder;
+            customerOrders[index].status = customerOrders[index].status === status.waitingRestaurant ? status.restaurantPreparingInProgess : status.waitingDriver;
+            res.send(JSON.stringify(customerOrders[index]));
+        }
+        else {
+            res.sendStatus(500);
+        }
     }
     catch (e) {
         console.log(e);
@@ -34,30 +41,41 @@ app.post('/postDriverAcceptsOrder', (req, res) => {
     try {
         const { orderId, driverId: id, driverLocation } = req.body;
         const driver = drivers.find(({ driverId }) => driverId === id);
-        const order = customerOrders.find(({ orderNumber }) => orderNumber === orderId);
-        const driverToRestaurant = distanceBetweenLocations(driverLocation, order.restaurantDetails.location);
-        const driverToCustomer = driverToRestaurant + distanceBetweenLocations(driverLocation, order.restaurantDetails.location);
-        const driverDetails = {
-            ...driver,
-            currentLocation: String,
-            distanceToRestaurant: driverToRestaurant,
-            distanceToCustomer: driverToCustomer,
-        };
         const index = customerOrders.findIndex(({ orderNumber }) => orderNumber === orderId);
-        customerOrders[index].restaurantDetails.driverDetails = driverDetails;
-        customerOrders[index].status = customerOrders[index].status === status.waitingDriver ? status.restaurantPreparingInProgess : status.waitingRestaurant;
-        res.send(JSON.stringify(customerOrders[index]));
+        if (index) {
+            const order = customerOrders[index];
+            const driverToRestaurant = distanceBetweenLocations(driverLocation, order.restaurantDetails.location);
+            const driverToCustomer = driverToRestaurant + distanceBetweenLocations(driverLocation, order.restaurantDetails.location);
+            const driverDetails = {
+                ...driver,
+                currentLocation: driverLocation,
+                distanceToRestaurant: driverToRestaurant,
+                distanceToCustomer: driverToCustomer,
+            };
+            customerOrders[index]['restaurantDetails']['driverDetails'] = driverDetails;
+            customerOrders[index]['status'] = customerOrders[index].status === status.waitingDriver ? status.restaurantPreparingInProgess : status.waitingRestaurant;
+            res.send(JSON.stringify(customerOrders[index]));
+        }
+        else {
+            res.sendStatus(500);
+        }
     }
     catch (e) {
         console.log(e);
+        res.sendStatus(e.status);
     }
 });
 app.post('/postRestaurantCompletesOrder', (req, res) => {
     try {
         const { orderId, status } = req.body;
         const index = customerOrders.findIndex(({ orderNumber }) => orderNumber === orderId);
-        customerOrders[index].status = status;
-        res.send(JSON.stringify(customerOrders[index]));
+        if (index) {
+            customerOrders[index].status = status;
+            res.send(JSON.stringify(customerOrders[index]));
+        }
+        else {
+            res.sendStatus(500);
+        }
     }
     catch (e) {
         console.log(e);
@@ -67,8 +85,13 @@ app.post('/postDriverPicksUpOrder', (req, res) => {
     try {
         const { orderId, status } = req.body;
         const index = customerOrders.findIndex(({ orderNumber }) => orderNumber === orderId);
-        customerOrders[index].status = status;
-        res.send(JSON.stringify(customerOrders[index]));
+        if (index) {
+            customerOrders[index].status = status;
+            res.send(JSON.stringify(customerOrders[index]));
+        }
+        else {
+            res.sendStatus(500);
+        }
     }
     catch (e) {
         console.log(e);
@@ -78,8 +101,13 @@ app.post('/postDriverCompletesOrder', (req, res) => {
     try {
         const { orderId, status } = req.body;
         const index = customerOrders.findIndex(({ orderNumber }) => orderNumber === orderId);
-        customerOrders[index].status = status;
-        res.send(JSON.stringify(customerOrders[index]));
+        if (index) {
+            customerOrders[index].status = status;
+            res.send(JSON.stringify(customerOrders[index]));
+        }
+        else {
+            res.sendStatus(500);
+        }
     }
     catch (e) {
         console.log(e);
@@ -89,8 +117,13 @@ app.post('/postCustomerCompletesOrder', (req, res) => {
     try {
         const { orderId, status } = req.body;
         const index = customerOrders.findIndex(({ orderNumber }) => orderNumber === orderId);
-        customerOrders[index].status = status;
-        res.send(JSON.stringify(customerOrders[index]));
+        if (index) {
+            customerOrders[index].status = status;
+            res.send(JSON.stringify(customerOrders[index]));
+        }
+        else {
+            res.sendStatus(500);
+        }
     }
     catch (e) {
         console.log(e);
@@ -100,6 +133,21 @@ app.get('/getRestaurantsNearMe', (req, res) => {
     try {
         validateObjectSchema(req.query, ['location']);
         res.send(JSON.stringify(restaurants));
+    }
+    catch (e) {
+        console.log(e);
+    }
+});
+app.get('/getRestaurantOrders', (req, res) => {
+    try {
+        const restaurantId = String(req.query);
+        const orders = customerOrders.map((details) => {
+            const { restaurantDetails } = details;
+            if (restaurantDetails.restaurantId === restaurantId) {
+                return details;
+            }
+        });
+        res.send(JSON.stringify(orders));
     }
     catch (e) {
         console.log(e);

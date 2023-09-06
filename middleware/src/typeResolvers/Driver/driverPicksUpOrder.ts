@@ -11,8 +11,10 @@ export default async function driverPicksUpOrder(parent, args, contextValue, inf
     const {data} = await contextValue.post(url, endpoint, {orderId:orderId, status:status.driverPickUpRestaurant});
 
     contextValue.pubsub.publish(`${orderId}_CUSTOMER`,{
-        CustomerOrderDetails:{
+        customerOrder:{
             ...data
         }
     });
+
+    return data.orderId;
 }

@@ -12,5 +12,6 @@ export async function executeAxiosGetRequest(urlEndpoint, endpoint, queryParamte
 }
 export async function executeAxiosPostRequest(urlEndpoint, endpoint, jsonData) {
     const url = constructUrl(urlEndpoint, endpoint);
+    console.log(jsonData);
     return await axios.post(url, jsonData);
 }

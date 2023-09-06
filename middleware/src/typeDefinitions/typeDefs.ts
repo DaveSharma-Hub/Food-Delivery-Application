@@ -112,11 +112,15 @@ const typeDefs = `
         restaurantGetOrders(restaurantId:String):[CustomerOrderDetails]
     }
 
+    type OrderId{
+        orderId:String
+    }
+
     
     type Mutation{
-        customerCreatesOrder(customerOrder:CustomerOrderInput): String
-        restaurantAcceptsOrder(orderId:String, timeToCompleteOrder: Float): String
-        driverAcceptsOrder(orderId: String, driverId: String, driverLocation:String): String
+        customerCreatesOrder(customerOrder:CustomerOrderInput): OrderId
+        restaurantAcceptsOrder(orderId:String, timeToCompleteOrder: Float): OrderId
+        driverAcceptsOrder(orderId: String, driverId: String, driverLocation:String): OrderId
 
         restaurantCompletesOrder(orderId: String): String
         driverPicksUpOrder(orderId: String): String
@@ -125,14 +129,14 @@ const typeDefs = `
     }
 
     type Subscription{
-        customerOrder(orderId: String): CustomerOrderDetails,
-        driverOrder(orderId:String): DriverOrderDetails,
-        restaurantOrder(orderId:String): RestaurantOrderDetails,
+        customerOrder(orderId: String): CustomerOrderDetails
+        driverOrder(orderId:String): DriverOrderDetails
+        restaurantOrder(orderId:String): RestaurantOrderDetails
 
-        restaurantObserveOrders(restaurantId:String): CustomerOrderDetails,
-        driverObserveOrders: CustomerOrderDetails,
+        restaurantObserveOrders(restaurantId:String): CustomerOrderDetails
+        driverObserveOrders: CustomerOrderDetails
     }
-
+    
 `;
 
 

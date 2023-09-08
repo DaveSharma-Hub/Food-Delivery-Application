@@ -37,6 +37,8 @@ const typeDefs = `
         firstName:String
         lastName:String
         rating:Float
+        username:String
+        password:String
     }
 
     type Drivers{
@@ -44,6 +46,8 @@ const typeDefs = `
         firstName: String
         lastName: String
         rating: Float
+        username:String
+        password:String
     }
 
     type OrderType{
@@ -112,8 +116,13 @@ const typeDefs = `
         restaurantGetOrders(restaurantId:String):[CustomerOrderDetails]
     }
 
-    type OrderId{
+    type OrderId {
         orderId:String
+    }
+
+    type LoginInfo {
+        loggedIn: String
+        id:String
     }
 
     
@@ -126,6 +135,8 @@ const typeDefs = `
         driverPicksUpOrder(orderId: String): String
         driverCompletesOrder(orderId: String): String
         customerCompletesOrder(orderId: String): String
+
+        customerLogin(username:String, password:String, userType:String):LoginInfo
     }
 
     type Subscription{

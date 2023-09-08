@@ -10,5 +10,5 @@ export default async function customerCompletesOrder(parent, args, contextValue,
             ...data
         }
     });
-    return data.orderId;
+    return orderId;
 }

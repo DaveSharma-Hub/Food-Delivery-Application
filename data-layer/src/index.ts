@@ -135,6 +135,35 @@ app.post('/postCustomerCompletesOrder',(req,res)=>{
     }
 })
 
+app.post('/postUserLogin',(req,res)=>{
+    const {username:user, password:pass, userType} = req.body;
+    const result = {
+        loggedIn:false,
+        id:new String('')
+    };
+    console.log(user, pass, userType);
+    switch(userType){
+        case 'CUSTOMER':
+            const customerFound = customers.find(({username, password})=>username===user && password===pass);
+            if(customerFound){
+                result.loggedIn = true;
+                result.id = customerFound.customerId;
+            }
+            break;
+        case 'DRIVER':
+            const driverFound = drivers.find(({username, password})=>username===user && password===pass);
+            if(driverFound){
+                result.loggedIn = true;
+                result.id = driverFound.driverId;
+            }
+        case 'RESTAURANT':
+            break;
+        default:
+            break;
+    }
+    res.send(JSON.stringify(result));
+})
+
 app.get('/getRestaurantsNearMe',(req,res)=>{
     try{
         validateObjectSchema(req.query,['location']);
@@ -172,7 +201,9 @@ const customers:CustomersType[] = [
         customerId:'1',
         firstName:'Bob',
         lastName:'Doe',
-        rating:4.5
+        rating:4.5,
+        username:'Bob123',
+        password:'12345'
     }
 ]
 
@@ -181,7 +212,9 @@ const drivers:DriversType[] = [
         driverId:'1',
         firstName:'Kelly',
         lastName:'Mason',
-        rating:4.5
+        rating:4.5,
+        username:'kells',
+        password:'12345'
     }
 ]
 

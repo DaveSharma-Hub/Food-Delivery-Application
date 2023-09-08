@@ -10,7 +10,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
 import AccountCircle from '@mui/icons-material/AccountCircle';
-
+import { useNavigate } from 'react-router-dom';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -64,6 +64,8 @@ export default function Header({}) {
 
   const isMenuOpen = Boolean(anchorEl);
 
+  const history = useNavigate();
+
   const handleProfileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -76,6 +78,10 @@ export default function Header({}) {
     setAnchorEl(null);
     handleMobileMenuClose();
   };
+
+  const handleClickLogin = () => {
+    history('/login');
+  }
 
   const menuId = 'primary-search-account-menu';
   const renderMenu = (
@@ -94,7 +100,7 @@ export default function Header({}) {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleMenuClose}>Login</MenuItem>
+      <MenuItem onClick={handleClickLogin}>Login</MenuItem>
       <MenuItem onClick={handleMenuClose}>Sign Up</MenuItem>
     </Menu>
   );

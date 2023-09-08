@@ -13,6 +13,8 @@ export type CustomersType = {
     firstName:String
     lastName:String
     rating:Number
+    username:String
+    password:String
 }
 
 export type DriversType = {
@@ -20,6 +22,8 @@ export type DriversType = {
     firstName: String
     lastName: String
     rating: Number
+    username:String
+    password:String
 }
 
 export type OrderType = {

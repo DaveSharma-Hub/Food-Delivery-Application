@@ -16,7 +16,7 @@ export default function AvailableRestaurants({}){
                         foodLogo={foodImage} 
                         restaurantLogo={image} 
                         description={description} 
-                        averageDeliveryTime={'14min'} 
+                        averageDeliveryTime={'14min'}
                         rating={String(rating)}
                     />
                 })

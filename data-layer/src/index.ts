@@ -141,7 +141,6 @@ app.post('/postUserLogin',(req,res)=>{
         loggedIn:false,
         id:new String('')
     };
-    console.log(user, pass, userType);
     switch(userType){
         case 'CUSTOMER':
             const customerFound = customers.find(({username, password})=>username===user && password===pass);
@@ -156,7 +155,49 @@ app.post('/postUserLogin',(req,res)=>{
                 result.loggedIn = true;
                 result.id = driverFound.driverId;
             }
+            break;
         case 'RESTAURANT':
+            break;
+        default:
+            break;
+    }
+    res.send(JSON.stringify(result));
+})
+
+
+app.post('/postUserSignup',(req,res)=>{
+    const {username, password, userType,firstName, lastName } = req.body;
+    const result = {
+        loggedIn:true,
+        id:new String('')
+    };
+    switch(userType){
+        case 'CUSTOMER':
+            const customerItem = {
+                customerId:new String(customers.length+1),
+                firstName:firstName,
+                lastName:lastName,
+                rating:0,
+                username:username,
+                password: password
+            }
+            customers.push(customerItem);
+            result.id = customerItem.customerId;
+            break;
+        case 'DRIVER':
+            const driverItem = {
+                driverId:new String(drivers.length+1),
+                firstName:firstName,
+                lastName:lastName,
+                rating:0,
+                username:username,
+                password: password
+            }
+            drivers.push(driverItem);
+            result.id = driverItem.driverId;
+            break;
+        case 'RESTAURANT':
+            
             break;
         default:
             break;
@@ -175,10 +216,10 @@ app.get('/getRestaurantsNearMe',(req,res)=>{
 
 app.get('/getRestaurantOrders', (req,res)=>{
     try{
-        const restaurantId:String = String(req.query);
+        const restaurantId = (req.query);
         const orders = customerOrders.map((details)=>{
             const {restaurantDetails} = details; 
-            if(restaurantDetails.restaurantId === restaurantId){
+            if(restaurantDetails.restaurantId === restaurantId.restaurantId){
                 return details;
             }   
         });
@@ -186,6 +227,12 @@ app.get('/getRestaurantOrders', (req,res)=>{
     }catch(e){ 
         console.log(e);
     }
+})
+
+app.get('/getRestaurantMenu',(req,res)=>{
+    const query = req.query;
+    const menu = menus.find(({restaurantId})=>restaurantId === query.restaurantId);
+    res.send(JSON.stringify(menu));
 })
 
 app.get('/health',(req,res)=>{
@@ -303,7 +350,7 @@ const restaurants:RestaurantsType[] = [
     ,
     {
         restaurantId:'9',
-        name:'Hapi Hoeki',
+        name:'Haanki',
         description:'Korean restaurant',
         location:'90,-45',
         rating:4.3,
@@ -321,3 +368,152 @@ const restaurants:RestaurantsType[] = [
         foodImage:'https://www.eatingwell.com/thmb/m5xUzIOmhWSoXZnY-oZcO9SdArQ=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/article_291139_the-top-10-healthiest-foods-for-kids_-02-4b745e57928c4786a61b47d8ba920058.jpg'
     }
 ];
+
+const menus = [
+    {
+        menuId:'1',
+        restaurantId:'1',
+        menuOrderIds: [
+            {
+                name:'Club Sandwich',
+                price:14.00
+            },{
+                name:'Veggie Delight',
+                price:9.10
+            },{
+                name:'Chicken Sandwich',
+                price:10.20
+            }
+        ]
+    },
+    {
+        menuId:'2',
+        restaurantId:'2',
+        menuOrderIds: [
+            {
+                name:'Cheese Pizza',
+                price:10.00
+            },
+            {
+                name:'Veggie Pizza',
+                price:7.10
+            }
+        ]
+    }
+    ,
+    {
+        menuId:'3',
+        restaurantId:'3',
+        menuOrderIds: [
+            {
+                name:'Chicken Bowl',
+                price:14.00
+            },{
+                name:'Beef Bowl',
+                price:9.10
+            }
+        ]
+    }
+    ,
+    {
+        menuId:'4',
+        restaurantId:'4',
+        menuOrderIds: [
+            {
+                name:'Butter Chicken',
+                price:14.00
+            },{
+                name:'Naan',
+                price:9.10
+            }
+        ]
+    }
+    ,
+    {
+        menuId:'5',
+        restaurantId:'5',
+        menuOrderIds: [
+            {
+                name:'Whopper Burger',
+                price:14.00
+            },{
+                name:'Chicken Burger',
+                price:9.10
+            }
+        ]
+    }
+    ,
+    {
+        menuId:'6',
+        restaurantId:'6',
+        menuOrderIds: [
+            {
+                name:'Big Mac',
+                price:14.00
+            },{
+                name:'Chicken Nuggets',
+                price:9.10
+            }
+        ]
+    }
+    ,
+    {
+        menuId:'7',
+        restaurantId:'7',
+        menuOrderIds: [
+            {
+                name:'Papa Burger',
+                price:14.00
+            },{
+                name:'Buddy Burger',
+                price:9.10
+            }
+        ]
+    }
+    ,
+    {
+        menuId:'8',
+        restaurantId:'8',
+        menuOrderIds: [
+            {
+                name:'Mama Burger',
+                price:14.00
+            },{
+                name:'Chicken Strip',
+                price:9.10
+            }
+        ]
+    }
+    ,
+    {
+        menuId:'9',
+        restaurantId:'9',
+        menuOrderIds: [
+            {
+                name:'Chicken Bowl',
+                price:14.00
+            },{
+                name:'Beef Bowl',
+                price:9.10
+            }
+        ]
+    }
+    ,
+    {
+        menuId:'10',
+        restaurantId:'10',
+        menuOrderIds: [
+            {
+                name:'Ribs',
+                price:14.00
+            },{
+                name:'Steak',
+                price:9.10
+            }
+        ]
+    }
+
+]
+/*
+IMPORTANT, need options for each ordr and size/variation for each order
+*/

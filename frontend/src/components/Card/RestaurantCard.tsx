@@ -25,7 +25,7 @@ type RestaurantCardType = {
 export default function RestaurantCard({id,name,foodLogo, restaurantLogo, description, averageDeliveryTime, rating}:RestaurantCardType){
     const history = useNavigate();
     const handleClickCard = () => {
-        history(`/restaurant?name=${name}&=${id}`);
+        history(`/restaurant?name=${name}&id=${id}`);
     }
 
     return(

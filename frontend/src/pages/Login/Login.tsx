@@ -1,4 +1,4 @@
-import { useEffect, useReducer } from 'react';
+import { FormEvent, useEffect, useReducer } from 'react';
 import usePostLoggin from "../../mutations/customers/usePostLoggin";
 import { useNavigate } from 'react-router-dom';
 
@@ -9,23 +9,27 @@ export default function Login({}){
         acc[curr.info] = curr.value;
         return acc;
     },{});
-    useEffect(() => {
-        if(data && data.loggedIn==='true' && data.id){
-            history('/home');
-        }
-    }, [data])
 
     if(error) return <h1>Error...</h1>
-    if(loading) return <h1>Loading...</h1>
 
-    const handleSubmitLoggin = () => {
-        customerLogin({
+    const handleSubmitLoggin = async(e:FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        const {data} = await customerLogin({
             variables:{
                 username:userLogginInfo.username,
                 password:userLogginInfo.password,
                 userType:'CUSTOMER'
             }
-        })
+        });
+
+        //console.log(data);
+        if(data?.customerLogin && data?.customerLogin.loggedIn==='true' && data?.customerLogin.id){
+            localStorage.setItem('id',data.customerLogin.id);
+            localStorage.setItem('username',userLogginInfo.username);
+            history('/home');
+        }else{
+            alert('Incorrect Username or Password');
+        }
     }
 
     return(
@@ -53,14 +57,23 @@ export default function Login({}){
                                 info:'password',
                                 value:e.target.value
                             })}}
+                            type="password"
                             required
                             />
                     </div>
                 </div>
                 <div className="flex justify-evenly py-5 mx-auto">
-                    <button type="submit" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-20 py-0.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Login</button>
+                    <button type="submit" className="text-white bg-black hover:bg-black focus:ring-4 focus:outline-none focus:ring-black font-medium rounded-lg text-sm w-full sm:w-auto px-20 py-0.5 text-center dark:bg-black dark:hover:bg-black dark:focus:ring-black">Login</button>
 
-                    <button type="button" className="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm w-full sm:w-auto px-20 py-2.5 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800">Sign Up</button>
+                    <button 
+                        onClick={()=>{
+                            history('/signup');
+                        }}
+                        type="button" 
+                        className="text-black bg-white hover:bg-white-800 focus:ring-4 focus:outline-black focus:ring-black-300 font-medium rounded-lg text-sm w-full sm:w-auto px-20 py-2.5 text-center dark:bg-white-600 dark:hover:bg-white-700 dark:focus:ring-black-800"
+                    >
+                        Sign Up
+                    </button>
                 </div>
             </form>
         </div>

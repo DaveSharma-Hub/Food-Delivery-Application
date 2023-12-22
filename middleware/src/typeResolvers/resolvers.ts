@@ -1,6 +1,7 @@
 import customerCompletesOrder from './Customer/customerCompletesOrder.js';
 import customerCreatesOrder from './Customer/customerCreatesOrder.js';
 import customerLogin from './Customer/customerLogin.js';
+import customerSignup from './Customer/customerSignup.js';
 import subscribeCustomerOrder from './Customer/subscribeCustomerOrder.js';
 import driverAcceptsOrder from './Driver/driverAcceptsOrder.js';
 import driverCompletesOrder from './Driver/driverCompletesOrder.js';
@@ -26,7 +27,8 @@ const resolvers = {
         driverPicksUpOrder:driverPicksUpOrder,
         driverCompletesOrder: driverCompletesOrder,
         customerCompletesOrder: customerCompletesOrder,
-        customerLogin:customerLogin
+        customerLogin:customerLogin,
+        customerSignup: customerSignup
     },
     Subscription: {
         customerOrder: {

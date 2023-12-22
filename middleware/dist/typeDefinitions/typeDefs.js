@@ -114,6 +114,7 @@ const typeDefs = `
     type Query{
         getRestaurantsNearMe(location:String): [Restaurants]
         restaurantGetOrders(restaurantId:String):[CustomerOrderDetails]
+        
     }
 
     type OrderId {
@@ -137,6 +138,7 @@ const typeDefs = `
         customerCompletesOrder(orderId: String): String
 
         customerLogin(username:String, password:String, userType:String):LoginInfo
+        customerSignup(username:String, password:String, userType:String, firstName:String, lastName:String):LoginInfo
     }
 
     type Subscription{

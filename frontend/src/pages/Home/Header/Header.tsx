@@ -58,6 +58,9 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 export default function Header({}) {
+  const id = localStorage.getItem('id');
+  const username = localStorage.getItem('username');
+
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
     React.useState<null | HTMLElement>(null);
@@ -82,6 +85,19 @@ export default function Header({}) {
   const handleClickLogin = () => {
     history('/login');
   }
+  const handleClickSignup = () => {
+    history('/signup');
+  }
+
+  const handleClickAccount = () => {
+
+  }
+
+  const handleClickLogout = () => {
+    localStorage.removeItem('id');
+    localStorage.removeItem('username');
+    history('/home');
+  }
 
   const menuId = 'primary-search-account-menu';
   const renderMenu = (
@@ -100,8 +116,18 @@ export default function Header({}) {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleClickLogin}>Login</MenuItem>
-      <MenuItem onClick={handleMenuClose}>Sign Up</MenuItem>
+      {
+        id ? 
+      <>
+        <MenuItem onClick={handleClickAccount}>{username}'s Account</MenuItem>
+        <MenuItem onClick={handleClickLogout}>Logout</MenuItem>
+      </>
+        :
+      <>
+        <MenuItem onClick={handleClickLogin}>Login</MenuItem>
+        <MenuItem onClick={handleClickSignup}>Sign Up</MenuItem>
+      </>
+      }
     </Menu>
   );
 

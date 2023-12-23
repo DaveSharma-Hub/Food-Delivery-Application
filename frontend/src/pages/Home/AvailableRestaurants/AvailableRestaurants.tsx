@@ -8,7 +8,7 @@ export default function AvailableRestaurants({}){
     return(
         <div className="grid grid-cols-3 gap-3 w-4/5 content-evenly mx-auto">
             {
-                data?.getRestaurantsNearMe.map(({restaurantId, name, description, rating, image, foodImage}:any)=>{
+                data?.getRestaurantsNearMe?.map(({restaurantId, name, description, rating, image, foodImage}:any)=>{
                     return <RestaurantCard 
                         key={restaurantId}
                         name={name}

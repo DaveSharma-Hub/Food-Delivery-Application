@@ -140,7 +140,10 @@ export default function Header({}) {
             variant="h5"
             noWrap
             component="div"
-            sx={{ display: { xs: 'none', sm: 'block', color:'red', fontWeight:'bold', fontFamily:'sans-serif',textShadow: '0.5px 0 0 #000, 0 -0.5px 0 #000, 0 0.5px 0 #000, -0.5px 0 0 #000' } }}
+            sx={{ display: { cursor:'pointer', xs: 'none', sm: 'block', color:'black', fontWeight:'serif', fontFamily:'monospace',textShadow: '0.5px 0 0 #000, 0 -0.5px 0 #000, 0 0.5px 0 #000, -0.5px 0 0 #000' } }}
+            onClick={()=>{
+              history('/home')
+            }}
           >
             DeliverMe
           </Typography>

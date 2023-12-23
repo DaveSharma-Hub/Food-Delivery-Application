@@ -4,6 +4,7 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
+import CartStoreContextProvider from './utils/CartStoreContextProvider';
 
 const middlewareEndpoint = process.env.REACT_MIDDLEWARE || 'http://localhost:4000/graphql';
 
@@ -12,14 +13,16 @@ const apolloClient = new ApolloClient({
   cache: new InMemoryCache()
 })
 
-
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
+
 root.render(
   <React.StrictMode>
     <ApolloProvider client={apolloClient}>
-      <App />
+      <CartStoreContextProvider>
+        <App />
+      </CartStoreContextProvider>
     </ApolloProvider>
   </React.StrictMode>
 );

@@ -110,11 +110,23 @@ const typeDefs = `
         restaurantOrderNumber: String
         driverDetails: DriverDetails
     }
+
+    type MenuDetailType{
+        name: String
+        price: String
+    }
+
+    type RestaurantMenuDetails{
+        menuId: String
+        restaurantId: String
+        menuOrderIds: [MenuDetailType]
+    }
+
     
     type Query{
         getRestaurantsNearMe(location:String): [Restaurants]
         restaurantGetOrders(restaurantId:String):[CustomerOrderDetails]
-        
+        getRestaurantMenu(restaurantId: String):RestaurantMenuDetails
     }
 
     type OrderId {

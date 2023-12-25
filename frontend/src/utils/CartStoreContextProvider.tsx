@@ -1,18 +1,23 @@
 import { createContext, useReducer } from "react";
 
+type myCartType = {
+    items: any[],
+    totalPrice: number
+}
 
 export const CartStoreContext = createContext({
-    getCartItems: () => {},
+    getCartItems: ():myCartType => ({items:[], totalPrice:0}),
     removeItem: (...params: any) => {},
-    addToCart: (...params: any) => {}
+    addToCart: (...params: any) => {},
+    clearItems: (...params:any) => {}
 });
 
 export default function CartStoreContextProvider({children}:{children:any}){
-    
-    const [cartStore, cartStoreDispatcher] = useReducer(taskReducer,{
+    const init: myCartType = {
         items:[],
         totalPrice:0
-    });
+    };
+    const [cartStore, cartStoreDispatcher] = useReducer(taskReducer,init);
     
     function taskReducer(tasks:any, action:any){
         switch(action.type){
@@ -36,6 +41,11 @@ export default function CartStoreContextProvider({children}:{children:any}){
                     items: removedItem,
                     totalPrice: updatedPrice
                 };
+            case "CLEAR_ITEMS":
+                return {
+                    items:[],
+                    totalPrice:0
+                }
         }
     }   
     
@@ -58,8 +68,17 @@ export default function CartStoreContextProvider({children}:{children:any}){
         })
     }
 
-    const getCartItems = () => {
-        return cartStore;
+    const getCartItems = ():myCartType => {
+        return {
+            items:cartStore?.items,
+            totalPrice: cartStore?.totalPrice
+        };
+    }
+
+    const clearItems = () => {
+        cartStoreDispatcher({
+            type:"CLEAR_ITEMS"
+        })
     }
 
     return(
@@ -67,7 +86,8 @@ export default function CartStoreContextProvider({children}:{children:any}){
             value={{
                 getCartItems:getCartItems,
                 removeItem: removeItem,
-                addToCart: addToCart
+                addToCart: addToCart,
+                clearItems: clearItems
             }}
         >
             {children}

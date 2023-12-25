@@ -10,7 +10,10 @@ import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
 import AccountCircle from '@mui/icons-material/AccountCircle';
+import Drawer from '@mui/material/Drawer';
 import { useNavigate } from 'react-router-dom';
+import { MyCart } from '../../../components/Cart/MyCart';
+import { CartStoreContext } from '../../../utils/CartStoreContextProvider';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -57,14 +60,14 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-export default function Header({}) {
+export default function Header() {
   const id = localStorage.getItem('id');
   const username = localStorage.getItem('username');
-
+  const [showDrawer , setShowDrawer ] = React.useState<boolean>(false)
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
     React.useState<null | HTMLElement>(null);
-
+  const { clearItems } = React.useContext(CartStoreContext);
   const isMenuOpen = Boolean(anchorEl);
 
   const history = useNavigate();
@@ -96,8 +99,17 @@ export default function Header({}) {
   const handleClickLogout = () => {
     localStorage.removeItem('id');
     localStorage.removeItem('username');
+    clearItems();
     history('/home');
   }
+
+  const toggleDrawer = (open: boolean) => (event:any) => {
+    if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
+      return;
+    }
+
+    setShowDrawer(open);
+  };
 
   const menuId = 'primary-search-account-menu';
   const renderMenu = (
@@ -157,7 +169,19 @@ export default function Header({}) {
             />
           </Search>
           <Box sx={{ flexGrow: 1 }} />
+          <Box sx={{ display: { xs: 'none', md: 'flex', cursor:'pointer' } }}>
+            {
+              id ?
+              <Typography
+                onClick={toggleDrawer(true)}
+              >
+                View Cart
+              </Typography>
+              : null
+            }
+          </Box>
           <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
+            
             <IconButton
               size="large"
               edge="end"
@@ -173,6 +197,17 @@ export default function Header({}) {
         </Toolbar>
       </AppBar>
       {renderMenu}
+      {
+        id ?
+        <Drawer
+          anchor='right'
+          open={showDrawer}
+          onClose={toggleDrawer(false)}
+        >
+          <MyCart toggleDrawer={toggleDrawer}/>
+        </Drawer>
+        : null
+      }
     </Box>
   );
 }

@@ -220,8 +220,8 @@ app.get('/getRestaurantOrders', (req, res) => {
     }
 });
 app.get('/getRestaurantMenu', (req, res) => {
-    const query = req.query;
-    const menu = menus.find(({ restaurantId }) => restaurantId === query.restaurantId);
+    const { restaurantId } = req.query;
+    const menu = menus.find(({ restaurantId: rID }) => rID === restaurantId);
     res.send(JSON.stringify(menu));
 });
 app.get('/health', (req, res) => {

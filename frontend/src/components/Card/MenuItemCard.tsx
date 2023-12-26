@@ -11,7 +11,7 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import ShareIcon from '@mui/icons-material/Share';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import {useNavigate} from 'react-router-dom';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { CartStoreContext } from '../../utils/CartStoreContextProvider';
 import { Button } from '@mui/material';
 
@@ -21,15 +21,17 @@ type MenuItemCardType = {
     foodLogo:string
     price: string
     restaurantName: string
+    handleToggleModalCart: any
 }
 
-export default function MenuItemCard({id,name,foodLogo, price, restaurantName}:MenuItemCardType){
-    const { getCartItems, removeItem, addToCart } = useContext(CartStoreContext);
-
-    const history = useNavigate();
-    const handleClickAddToCart = () => {
-        // history(`/restaurant?name=${name}&id=${id}`);
-        addToCart(name, Number.parseInt(price),1, restaurantName);
+export default function MenuItemCard({id,name,foodLogo, price, restaurantName, handleToggleModalCart}:MenuItemCardType){
+    const handleClickAddModalCart = () => {
+      handleToggleModalCart({
+        name:name,
+        price: Number.parseFloat(price),
+        frequency:0,
+        restaurantName:restaurantName
+      });
     }
 
     return(
@@ -63,7 +65,7 @@ export default function MenuItemCard({id,name,foodLogo, price, restaurantName}:M
         <IconButton aria-label="share">
           <ShareIcon />
         </IconButton> */}
-        <Button onClick={handleClickAddToCart}>Add To Cart</Button>
+          <Button onClick={handleClickAddModalCart}>Add To Cart</Button>
         </CardActions>
     </Card>
     )

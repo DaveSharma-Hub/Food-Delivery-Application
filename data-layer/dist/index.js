@@ -171,7 +171,8 @@ app.post('/postUserSignup', (req, res) => {
                 lastName: lastName,
                 rating: 0,
                 username: username,
-                password: password
+                password: password,
+                cart: []
             };
             customers.push(customerItem);
             result.id = customerItem.customerId;
@@ -192,6 +193,52 @@ app.post('/postUserSignup', (req, res) => {
             break;
         default:
             break;
+    }
+    res.send(JSON.stringify(result));
+});
+app.post('/postUpdateCustomerCart', (req, res) => {
+    try {
+        const { cart, customerId: id } = req.body;
+        const index = customers.findIndex(({ customerId }) => customerId === id);
+        if (index === -1) {
+            throw Error("Customer doesnt exist");
+        }
+        for (let i = 0; i < cart.length; i++) {
+            const { name, price, frequency, restaurantName } = cart[i];
+            customers[index].cart.push({
+                name: name,
+                price: price,
+                frequency: frequency,
+                restaurantName: restaurantName
+            });
+        }
+        res.send(JSON.stringify({
+            status: 200
+        }));
+    }
+    catch (e) {
+        console.log(e);
+        res.send(JSON.stringify({
+            status: 500
+        }));
+    }
+});
+app.get('/getCustomerCart', (req, res) => {
+    const result = {
+        cart: [],
+        customerId: ''
+    };
+    try {
+        const { customerId: id } = req.query;
+        const customer = customers.find(({ customerId }) => customerId === id);
+        if (!customer) {
+            throw Error("Customer doesnt exist, incorrect id");
+        }
+        result.customerId = id;
+        result.cart = customer.cart;
+    }
+    catch (e) {
+        console.log(e);
     }
     res.send(JSON.stringify(result));
 });
@@ -237,7 +284,8 @@ const customers = [
         lastName: 'Doe',
         rating: 4.5,
         username: 'Bob123',
-        password: '12345'
+        password: '12345',
+        cart: []
     }
 ];
 const drivers = [

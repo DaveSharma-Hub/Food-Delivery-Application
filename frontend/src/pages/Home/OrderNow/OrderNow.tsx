@@ -4,7 +4,7 @@ export default function OrderNow({}){
     return(
         <div className="w-full mt-20 mx-auto py-2.5">
             <Typography sx={{textAlign:'center'}}>
-                Start ordering from your favourite restaurant near you delivered at your doorstep.
+                Start ordering from your favourite restaurant delivered at your doorstep.
             </Typography>
             <Box sx={{
                 margin:'0 auto',
@@ -18,7 +18,8 @@ export default function OrderNow({}){
                     color:'white', 
                     width:'100%',
                     '&:hover':{
-                        color:'blue'
+                        color:'blue',
+                        border:'1px solid blue'
                         }
                     }}>
                     Order Now!

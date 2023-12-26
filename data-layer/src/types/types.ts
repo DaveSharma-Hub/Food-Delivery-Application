@@ -8,13 +8,21 @@ export type RestaurantsType = {
     foodImage:String
 }
 
+export type CartOrderType = {
+    name: String,
+    price: Number,
+    frequency: Number,
+    restaurantName:String
+}
+
 export type CustomersType = {
     customerId:String
     firstName:String
     lastName:String
     rating:Number
     username:String
-    password:String
+    password:String,
+    cart: CartOrderType[]
 }
 
 export type DriversType = {
@@ -86,3 +94,4 @@ export type RestaurantOrderDetailsType = {
     restaurantOrderNumber: String
     driverDetails: DriverDetailsType
 }
+

@@ -22,6 +22,31 @@ const typeDefs = `
         totalCost: Float
     }
 
+    input CartOrder {
+        name: String,
+        price: Float,
+        frequency: Int,
+        restaurantName:String
+    }
+
+    input CartOrderInput {
+        cart: [CartOrder]
+        customerId: String
+    }
+
+    type CartOrdersType {
+        cart: [CartOrderType]
+        customerId: String
+    }
+
+    type CartOrderType {
+        name: String,
+        price: Float,
+        frequency: Int,
+        restaurantName:String
+    }
+
+
     type Restaurants{
         restaurantId:String
         name:String
@@ -127,6 +152,8 @@ const typeDefs = `
         getRestaurantsNearMe(location:String): [Restaurants]
         restaurantGetOrders(restaurantId:String):[CustomerOrderDetails]
         getRestaurantMenu(restaurantId: String):RestaurantMenuDetails
+        
+        getCustomerCart(customerId:String): CartOrdersType
     }
 
     type OrderId {
@@ -137,7 +164,6 @@ const typeDefs = `
         loggedIn: String
         id:String
     }
-
     
     type Mutation{
         customerCreatesOrder(customerOrder:CustomerOrderInput): OrderId
@@ -151,6 +177,7 @@ const typeDefs = `
 
         customerLogin(username:String, password:String, userType:String):LoginInfo
         customerSignup(username:String, password:String, userType:String, firstName:String, lastName:String):LoginInfo
+        customerUpdateCart(cartInput: CartOrderInput): String
     }
 
     type Subscription{

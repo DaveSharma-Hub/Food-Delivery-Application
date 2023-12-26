@@ -1,4 +1,5 @@
 import { createContext, useReducer } from "react";
+import usePostCustomerCart from "../mutations/customers/usePostCustomerCart";
 
 type myCartType = {
     items: any[],
@@ -18,7 +19,9 @@ export default function CartStoreContextProvider({children}:{children:any}){
         totalPrice:0
     };
     const [cartStore, cartStoreDispatcher] = useReducer(taskReducer,init);
-    
+    const [ postCustomerCart, {data,loading, error} ] = usePostCustomerCart();
+    const id = localStorage.getItem('id');
+
     function taskReducer(tasks:any, action:any){
         switch(action.type){
             case "ADD_ITEM":
@@ -29,10 +32,25 @@ export default function CartStoreContextProvider({children}:{children:any}){
                     itemId: currentItems.length
                 });
                 const addedPrices = menuItemPrice * frequency;
+                
+                postCustomerCart({
+                    variables:{
+                        cartInput:{
+                            cart:cartStore?.items,
+                            customerId:id
+                        }
+                    }
+                })
+                .then()
+                .catch((e)=>{
+                    console.log(e);
+                })
+                
                 return {
                     items: currentItems,
                     totalPrice: tasks.totalPrice + addedPrices
                 };
+                
             case "REMOVE_ITEM":
                 const removedItem = tasks.items.filter((i:any)=>i.itemId === action.id);
                 const {menuItemPrice: price , frequency: freq} = tasks.items.find((i:any)=>i.itemId === action.id);

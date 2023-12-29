@@ -26,7 +26,8 @@ const typeDefs = `
         name: String,
         price: Float,
         frequency: Int,
-        restaurantName:String
+        restaurantName:String,
+        itemId: String
     }
 
     input CartOrderInput {
@@ -43,9 +44,9 @@ const typeDefs = `
         name: String,
         price: Float,
         frequency: Int,
-        restaurantName:String
+        restaurantName:String,
+        itemId: String
     }
-
 
     type Restaurants{
         restaurantId:String

@@ -204,14 +204,16 @@ app.post('/postUpdateCustomerCart', (req, res) => {
             throw Error("Customer doesnt exist");
         }
         for (let i = 0; i < cart.length; i++) {
-            const { name, price, frequency, restaurantName } = cart[i];
+            const { name, price, frequency, restaurantName, itemId } = cart[i];
             customers[index].cart.push({
                 name: name,
                 price: price,
                 frequency: frequency,
-                restaurantName: restaurantName
+                restaurantName: restaurantName,
+                itemId: itemId
             });
         }
+        console.log('CUSTOMER', customers[index].cart);
         res.send(JSON.stringify({
             status: 200
         }));
@@ -240,6 +242,7 @@ app.get('/getCustomerCart', (req, res) => {
     catch (e) {
         console.log(e);
     }
+    console.log(result.cart);
     res.send(JSON.stringify(result));
 });
 app.get('/getRestaurantsNearMe', (req, res) => {

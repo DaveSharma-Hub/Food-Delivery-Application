@@ -12,7 +12,8 @@ export type CartOrderType = {
     name: String,
     price: Number,
     frequency: Number,
-    restaurantName:String
+    restaurantName:String,
+    itemId:String
 }
 
 export type CustomersType = {

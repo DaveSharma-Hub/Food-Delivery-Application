@@ -5,6 +5,8 @@ import Header from "../Home/Header/Header";
 import { Box, Button, Typography } from "@mui/material";
 import { useContext, useRef, useState } from "react";
 import { CartStoreContext } from "../../utils/CartStoreContextProvider";
+import AddIcon from '@mui/icons-material/Add';
+import RemoveIcon from '@mui/icons-material/Remove';
 
 type MenuItemsInputType = {
     id:string
@@ -68,7 +70,7 @@ export default function Restaurant({}){
         const obj:ModalInputType = {
            ...openModal
         };
-        obj.data.frequency = obj.data.frequency-1;
+        obj.data.frequency = obj.data.frequency <= 0 ? 0 : obj.data.frequency-1;
         setOpenModal(obj);
     }
 
@@ -83,6 +85,12 @@ export default function Restaurant({}){
         addToCart(name, price,frequency, restaurantName);
         setOpenModal(initModalData);
     }
+
+    const handleCloseModal = () => {
+        setOpenModal(initModalData);
+    }
+   
+    
     return(
         <div>
             <div>
@@ -112,15 +120,57 @@ export default function Restaurant({}){
                 </div>
                 {
                     openModal.isOpen ?
-                    <div style={{width:'35%', height:'25%', zIndex:'5', top:'20%',left:'32.5%',position:'fixed', backgroundColor:'blue', borderRadius:'10px 10px' }}>
+                    <div style={{
+                        width:'35%', 
+                        height:'30%', 
+                        zIndex:'5', 
+                        top:'20%',
+                        left:'32.5%',
+                        position:'fixed',
+                        background: 'rgba(255, 255, 255, 0.62)',
+                        borderRadius: '16px',
+                        boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
+                        backdropFilter: 'blur(12.8px)',
+                        border: '1px solid rgba(255, 255, 255, 1)',
+                        color:'blue'
+                        }}
+                        >
                         <Box>
-                            <Button onClick={handleAddFrequency}>
-                                +
-                            </Button>
-                            <Button onClick={handleRemoveFrequency}>
-                                -
-                            </Button>
-                            <Button onClick={handleAddToCart}>Add</Button>
+                            <Box sx={{textAlign:'center'}}>
+                                <Typography variant="h4">
+                                    {
+                                        openModal?.data?.name
+                                    }
+                                </Typography>
+                            </Box>
+                            <Box sx={{textAlign:'center'}}>
+                                <Typography>
+                                    Price: $
+                                    {
+                                        openModal?.data?.price
+                                    }
+                                </Typography>
+                            </Box>
+                            <Box sx={{width:'30%',margin:'0 auto', padding:'10px 0px'}}>
+                                <Button onClick={handleAddFrequency}>
+                                    <AddIcon />
+                                </Button>
+                                <Button onClick={handleRemoveFrequency}>
+                                    <RemoveIcon />
+                                </Button>
+                            </Box>
+                            <Box sx={{textAlign:'center', padding:'10px 2px'}}>
+                                <Typography>
+                                    Count:
+                                    {
+                                        openModal?.data?.frequency
+                                    }
+                                </Typography>
+                            </Box>
+                            <Box sx={{width:'34%', margin:'0 auto'}}>
+                                <Button onClick={handleAddToCart}>Add</Button>
+                                <Button variant="outlined" onClick={handleCloseModal}>Close</Button>
+                            </Box>
                         </Box>
                     </div>
                     : null

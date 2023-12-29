@@ -1,5 +1,6 @@
-import { createContext, useReducer } from "react";
+import { createContext, useReducer, useEffect, useState } from "react";
 import usePostCustomerCart from "../mutations/customers/usePostCustomerCart";
+import useGetCustomerCart from "../queries/customers/useGetCustomerCart";
 
 type myCartType = {
     items: any[],
@@ -18,43 +19,70 @@ export default function CartStoreContextProvider({children}:{children:any}){
         items:[],
         totalPrice:0
     };
-    const [cartStore, cartStoreDispatcher] = useReducer(taskReducer,init);
-    const [ postCustomerCart, {data,loading, error} ] = usePostCustomerCart();
     const id = localStorage.getItem('id');
+    const [ postCustomerCart, {data,loading, error} ] = usePostCustomerCart();
+    const [cartStore, cartStoreDispatcher] = useReducer(taskReducer,init);
+    const [ initialRender ,setInitialRender ] = useState<boolean>(true);
+    
+    const {data:dataCart, loading:loadingCart, error:errorCart} = useGetCustomerCart(id!, () => {
+        cartStoreDispatcher({
+            type:"SET_ITEMS",
+            items: dataCart.getCustomerCart.cart
+        })
+    });
+   
+    // useEffect(() => {
+    //     (async()=>{
+    //         if(cartStore?.items.length!==0 && !initialRender){
+    //             await postCustomerCart({
+    //                 variables:{
+    //                     cartInput:{
+    //                         cart:cartStore?.items,
+    //                         customerId:id
+    //                     }
+    //                 }
+    //             });
+    //         }else{
+    //             setInitialRender(false);
+    //         }
+    //     })();
+    // }, [cartStore?.items.length])
 
+
+    if(error || errorCart) return <h1>Error</h1>
+    if(loading || loadingCart) return <h1>Loading...</h1>
+    
     function taskReducer(tasks:any, action:any){
         switch(action.type){
             case "ADD_ITEM":
                 const currentItems = [...tasks.items];
-                const { menuItemPrice, frequency } = action.item;
-                currentItems.push({
-                    ...action.item,
-                    itemId: currentItems.length
-                });
-                const addedPrices = menuItemPrice * frequency;
+                const { price: priceA, frequency:freqA } = action.item;
                 
+                const newItemObject = {
+                    itemId: String(currentItems.length),
+                    ...action.item
+                };
+                
+                currentItems.push(newItemObject);
+                const addedPrices = priceA * freqA;
                 postCustomerCart({
                     variables:{
                         cartInput:{
-                            cart:cartStore?.items,
+                            cart:[newItemObject],
                             customerId:id
                         }
                     }
-                })
-                .then()
-                .catch((e)=>{
-                    console.log(e);
-                })
-                
+                }).then().catch();
+                console.log(newItemObject);
                 return {
                     items: currentItems,
                     totalPrice: tasks.totalPrice + addedPrices
                 };
                 
             case "REMOVE_ITEM":
-                const removedItem = tasks.items.filter((i:any)=>i.itemId === action.id);
-                const {menuItemPrice: price , frequency: freq} = tasks.items.find((i:any)=>i.itemId === action.id);
-                const updatedPrice = tasks.totalPrice - (price * freq);
+                const removedItem = tasks.items.filter((i:any)=>i.itemId !== action.id);
+                const {price: priceR , frequency: freqR} = tasks.items.find((i:any)=>i.itemId === action.id);
+                const updatedPrice = tasks.totalPrice - (priceR * freqR);
                 return {
                     items: removedItem,
                     totalPrice: updatedPrice
@@ -64,6 +92,24 @@ export default function CartStoreContextProvider({children}:{children:any}){
                     items:[],
                     totalPrice:0
                 }
+            case "SET_ITEMS":
+                const items = []; 
+                let totalPrice = 0;               
+                for(const item of action.items){
+                    items.push({
+                        name: item.name,
+                        price: item.price,
+                        frequency: item.frequency,
+                        restaurantName: item.restaurantName,
+                        itemId: item.itemId
+                    });
+                    totalPrice += (item.price * item.frequency);
+                }
+                console.log(items);
+                return {
+                    items: items,
+                    totalPrice: totalPrice
+                };
         }
     }   
     
@@ -71,10 +117,10 @@ export default function CartStoreContextProvider({children}:{children:any}){
         cartStoreDispatcher({
             type:"ADD_ITEM",
             item: {
-                menuItemName,
-                menuItemPrice,
-                frequency,
-                restaurantName
+                name: menuItemName,
+                price: menuItemPrice,
+                frequency: frequency,
+                restaurantName: restaurantName
             }
         });
     }

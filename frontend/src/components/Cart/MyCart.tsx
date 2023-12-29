@@ -2,11 +2,20 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import { useContext, useState } from 'react';
 import { CartStoreContext } from '../../utils/CartStoreContextProvider';
+import useGetCustomerCart from '../../queries/customers/useGetCustomerCart';
 
 
 export function MyCart({toggleDrawer}:{toggleDrawer:any}){
+     
+    const id = localStorage.getItem('id');
+
+    // const {data, loading, error} = useGetCustomerCart(id!);
+
+    // if(error) return <h1>Error</h1>
+    // if(loading) return <h1>Loading...</h1>
+
     const { getCartItems, removeItem, addToCart } = useContext(CartStoreContext);    
-    const [ myCart, setMyCart ] = useState(getCartItems());   
+    const [ myCart, setMyCart ] = useState(getCartItems());  
 
     return (
         <Box
@@ -24,14 +33,14 @@ export function MyCart({toggleDrawer}:{toggleDrawer:any}){
                 My Cart
             </Typography>
             {
-                myCart?.items?.map(({menuItemName,
-                    menuItemPrice,
+                myCart?.items?.map(({name,
+                    price,
                     frequency,
                     restaurantName})=>{
                     return(
                         <div>
-                            {menuItemName}
-                            {menuItemPrice}
+                            {name}
+                            {price}
                             x {frequency}
                             {restaurantName}
                         </div>

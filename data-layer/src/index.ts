@@ -214,14 +214,16 @@ app.post('/postUpdateCustomerCart',(req,res)=>{
             throw Error("Customer doesnt exist");
         }
         for(let i=0;i<cart.length;i++){
-            const { name, price, frequency, restaurantName } = cart[i];
+            const { name, price, frequency, restaurantName, itemId } = cart[i];
             customers[index].cart.push({
                 name:name, 
                 price:price, 
                 frequency:frequency, 
-                restaurantName:restaurantName
+                restaurantName:restaurantName,
+                itemId: itemId
             });
         }
+
         res.send(JSON.stringify({
             status:200
         }));

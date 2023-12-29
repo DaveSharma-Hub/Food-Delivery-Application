@@ -8,6 +8,5 @@ export default async function getCustomerCart(parent, args, contextValue, info) 
         }];
     const endpoint = 'getCustomerCart';
     const result = await contextValue.get(url, endpoint, queryParamaters);
-    console.log(result);
     return result.data;
 }

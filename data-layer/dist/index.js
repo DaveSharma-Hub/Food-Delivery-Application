@@ -213,7 +213,6 @@ app.post('/postUpdateCustomerCart', (req, res) => {
                 itemId: itemId
             });
         }
-        console.log('CUSTOMER', customers[index].cart);
         res.send(JSON.stringify({
             status: 200
         }));
@@ -242,7 +241,6 @@ app.get('/getCustomerCart', (req, res) => {
     catch (e) {
         console.log(e);
     }
-    console.log(result.cart);
     res.send(JSON.stringify(result));
 });
 app.get('/getRestaurantsNearMe', (req, res) => {

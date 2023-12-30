@@ -36,7 +36,7 @@ const splitLink = split(
 const apolloClient = new ApolloClient({
   link:splitLink,
   cache: new InMemoryCache()
-})
+});
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement

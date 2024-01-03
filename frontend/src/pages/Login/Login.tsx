@@ -1,6 +1,7 @@
-import { FormEvent, useEffect, useReducer } from 'react';
+import { FormEvent, useEffect, useReducer, useState } from 'react';
 import usePostLoggin from "../../mutations/customers/usePostLoggin";
 import { useNavigate } from 'react-router-dom';
+import UserTypeDropdown from '../../components/Dropdown/UserTypeDropdown';
 
 export default function Login({}){
     const history = useNavigate();
@@ -8,7 +9,16 @@ export default function Login({}){
     const [userLogginInfo, setUserLoginInfo] = useReducer((acc:any,curr:any)=>{
         acc[curr.info] = curr.value;
         return acc;
-    },{});
+    },{userType:null});
+    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+
+    const handleProfileMenuClose = () => {
+        setAnchorEl(null);
+    }
+    
+    const handleProfileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+        setAnchorEl(event.currentTarget);
+    }
 
     if(error) return <h1>Error...</h1>
 
@@ -18,7 +28,7 @@ export default function Login({}){
             variables:{
                 username:userLogginInfo.username,
                 password:userLogginInfo.password,
-                userType:'CUSTOMER'
+                userType:userLogginInfo.userType
             }
         });
 
@@ -60,6 +70,24 @@ export default function Login({}){
                             type="password"
                             required
                             />
+                    </div>
+                    <div>
+                        <UserTypeDropdown 
+                            handleSetData={(i:any)=>{setUserLoginInfo(i)}}
+                            handleClose={handleProfileMenuClose}
+                            anchorValue={anchorEl}
+                        />
+                    </div>
+                     <div className="flex justify-evenly py-5 mx-auto">
+                        <button 
+                            onClick={handleProfileMenuOpen}
+                            type="button" 
+                            className="text-white bg-black hover:bg-black focus:ring-4 focus:outline-none focus:ring-black font-medium rounded-lg text-sm w-full sm:w-auto px-20 py-0.5 text-center dark:bg-black dark:hover:bg-black dark:focus:ring-black"
+                        >
+                            {
+                                userLogginInfo.userType ? userLogginInfo.userType : "User type"
+                            }
+                        </button>
                     </div>
                 </div>
                 <div className="flex justify-evenly py-5 mx-auto">

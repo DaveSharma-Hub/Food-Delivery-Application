@@ -25,10 +25,12 @@ export default function CartStoreContextProvider({children}:{children:any}){
     const [ initialRender ,setInitialRender ] = useState<boolean>(true);
     
     const {data:dataCart, loading:loadingCart, error:errorCart} = useGetCustomerCart(id!, () => {
-        cartStoreDispatcher({
-            type:"SET_ITEMS",
-            items: dataCart.getCustomerCart.cart
-        })
+        if(cartStore?.items.length === 0) {
+            cartStoreDispatcher({
+                type:"SET_ITEMS",
+                items: dataCart.getCustomerCart.cart
+            })
+        }
     });
    
     // useEffect(() => {
@@ -51,7 +53,8 @@ export default function CartStoreContextProvider({children}:{children:any}){
 
     if(error || errorCart) return <h1>Error</h1>
     if(loading || loadingCart) return <h1>Loading...</h1>
-    
+
+
     function taskReducer(tasks:any, action:any){
         switch(action.type){
             case "ADD_ITEM":
@@ -65,6 +68,7 @@ export default function CartStoreContextProvider({children}:{children:any}){
                 
                 currentItems.push(newItemObject);
                 const addedPrices = priceA * freqA;
+                
                 postCustomerCart({
                     variables:{
                         cartInput:{
@@ -72,7 +76,8 @@ export default function CartStoreContextProvider({children}:{children:any}){
                             customerId:id
                         }
                     }
-                }).then().catch();
+                });
+
                 console.log(newItemObject);
                 return {
                     items: currentItems,

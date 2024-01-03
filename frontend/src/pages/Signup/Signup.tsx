@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import usePostSignupCustomer from '../../mutations/customers/usePostSignup';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
+import UserTypeDropdown from '../../components/Dropdown/UserTypeDropdown';
 
 
 export default function Signup({}){
@@ -11,7 +12,7 @@ export default function Signup({}){
     const [signupData, setSignupData] = useReducer((acc: any,curr: any)=>{
         acc[curr.info] = curr.value;
         return acc;
-    },{});
+    },{userType:null});
     const [customerSignup, {data,error,loading}] = usePostSignupCustomer();
     
     const history = useNavigate();
@@ -39,7 +40,15 @@ export default function Signup({}){
 
     const handleProfileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget);
-      };
+    };
+
+    const handleProfileMenuClose = () => {
+        setAnchorEl(null);
+    }
+
+    const handleUserType = (item:any) => {
+        setSignupData(item);
+    }
 
     if(error) return <h1>Error</h1>
     // if(loading) return <h1>Loading...</h1>
@@ -102,38 +111,11 @@ export default function Signup({}){
                 </div>
             </div>
             <div>
-                <Menu
-                    anchorEl={anchorEl}
-                    anchorOrigin={{
-                        vertical: 'top',
-                        horizontal: 'right',
-                    }}
-                    keepMounted
-                    transformOrigin={{
-                        vertical: 'top',
-                        horizontal: 'right',
-                    }}
-                    open={Boolean(anchorEl)}
-                    onClose={()=>{
-                        setAnchorEl(null);
-                    }}
-                    >
-                    <MenuItem onClick={(e)=>{
-                        setSignupData({
-                            info:'userType',
-                            value:'CUSTOMER'
-                        })
-                        setAnchorEl(null);
-
-                        }}>Customer</MenuItem>
-                    <MenuItem onClick={(e)=>{setSignupData({
-                            info:'userType',
-                            value:'DRIVER'
-                        })
-                        setAnchorEl(null);
-
-                        }}>Driver</MenuItem>
-                </Menu>
+                <UserTypeDropdown 
+                    handleSetData={handleUserType}
+                    anchorValue={anchorEl}
+                    handleClose={handleProfileMenuClose}
+                />
             </div>
             <div className="flex justify-evenly py-5 mx-auto">
                 <button 
@@ -141,7 +123,9 @@ export default function Signup({}){
                     type="button" 
                     className="text-white bg-black hover:bg-black focus:ring-4 focus:outline-none focus:ring-black font-medium rounded-lg text-sm w-full sm:w-auto px-20 py-0.5 text-center dark:bg-black dark:hover:bg-black dark:focus:ring-black"
                 >
-                    User type
+                    {
+                        signupData.userType ? signupData.userType : "User type"
+                    }
                 </button>
             </div>
             

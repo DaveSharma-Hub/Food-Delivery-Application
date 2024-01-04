@@ -8,5 +8,7 @@ const USE_POST_CUSTOMER_CART = gql`
 `;
 
 export default function usePostCustomerCart(){
-    return useMutation(USE_POST_CUSTOMER_CART);
+    return useMutation(USE_POST_CUSTOMER_CART,{
+        ignoreResults:true
+    });
 }
